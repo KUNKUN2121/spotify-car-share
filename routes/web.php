@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SpotifyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/spotify', [SpotifyController::class, 'index']);
+Route::get('/spotify/login', [SpotifyController::class, 'redirectToSpotify']);
+Route::get('/spotify/callback', [SpotifyController::class, 'handleCallback']);
+
+Route::get('/spotify/play', [SpotifyController::class, 'playPause']);
+Route::get('/spotify/getCurrentTrack', [SpotifyController::class, 'getCurrentTrack']);
+
+
+Route::get('/home', [SpotifyController::class, 'getAccessToken'])->name('getAccessToken');
