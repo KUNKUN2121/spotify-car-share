@@ -11,14 +11,14 @@ class SpotifyController extends Controller
 {
     public function index(){
 
-        $nowPlaying = SpotifyController::getCurrentTrack();
+        // $nowPlaying = SpotifyController::getCurrentTrack();
 
+        // if(gettype($nowPlaying) != 'array'){
+        //     $nowPlaying == null;
+        // }
+        return view('home');
         // dd($nowPlaying);
-        if(gettype($nowPlaying) != 'array'){
-            $nowPlaying == null;
-        }
-        // return view('home');
-        return view('home')->with($nowPlaying);
+        // return view('home')->with($nowPlaying);
     }
 
     public function sendSpotifyAPI($url, $header){
@@ -54,6 +54,7 @@ class SpotifyController extends Controller
     // アクセストークン リフレッシュトークンを取得する。
     public function handleCallback(Request $request)
     {
+
         $code = $request->input('code');
         $response = Http::asForm()->post('https://accounts.spotify.com/api/token', [
             'grant_type' => 'authorization_code',
@@ -70,6 +71,7 @@ class SpotifyController extends Controller
             cache(['access_token' => $access_token], now()->addMinutes(60));
             cache(['refresh_token' => $refresh_token], now()->addDays(7));
         } catch (\Throwable $th) {
+            dd($th);
             // エラーが発生した場合Loginからやり直す。
             return redirect('spotify/login');
         }
@@ -137,7 +139,9 @@ class SpotifyController extends Controller
 
         if (!$response->successful()) {
             // JSONで返して処理を終了する。
-            return response()->json(['error' => '現在のトラックの取得に失敗しました', 'details' => $result], $response->status());
+            // return response()->json(['error' => '現在のトラックの取得に失敗しました', 'details' => $result], $response->status());
+
+            return null;
         }
         if($result == null){
             return response()->json(['error' => '現在再生していません。', 'details' => $result], $response->status());
@@ -152,7 +156,7 @@ class SpotifyController extends Controller
 
         $value = compact('title', 'artist', 'albumArt', 'durationMs', 'progressMs');
         return $value;
-        // return view('home')->with($value);
+        return view('home')->with($value);
     }
 
 

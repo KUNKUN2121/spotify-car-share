@@ -18,12 +18,14 @@
           margin-top: 20px;
         }
       </style>
+      <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
 </head>
 
 <body>
     <a href="/spotify/login">ログイン</a>
     <a href="spotify/play">再生</a>
-    @if( isset($title) )
+
         {{-- {{ $title ?? '再生されていません。' }}
         {{ $artist ?? '再生されていません。' }}
         <img src="{{$albumArt}}" alt=""> --}}
@@ -32,9 +34,9 @@
             <div class="row">
               <div class="col-md-6 text-center">
                 <!-- Left Side: Album Art, Song Info, Controls -->
-                <img src="{{ $albumArt ?? '' }}" alt="Album Art" class="img-fluid rounded mx-auto d-block">
-                <h3 class="mt-3">{{ $title ?? '' }}</h3>
-                <p>{{ $artist ?? '' }}</p>
+                <img src="" alt="Album Art" class="img-fluid rounded mx-auto d-block" id="albumArt">
+                <h3 class="mt-3" id="title">TITLE</h3>
+                <p id="artist">artist</p>
                 <div class="text-center mt-3">
                   <!-- Progress Bar and Time Display -->
                   <div id="progressBarContainer">
@@ -58,17 +60,97 @@
               </div>
             </div>
           </div>
-    @endif
+
 
 </body>
-</html>
 
+
+<script src="{{ asset('/js/lyrics.js') }}"></script>
 <script>
-            progressBar();
-        function progressBar(){
+    let oldTitle;
+    let title;
+    let artist;
+    let albumArt;
+    let durationMs;
+    let progressMs;
+
+
+        getTrackInfo();
+
+        printProgressBar();
+        function printProgressBar(){
             const progress = document.querySelector("#progressBar");
-            percent = ( {{ $progressMs }} / {{ $durationMs }} )  * 100
+            percent = ( progressMs / durationMs )  * 100
             progress.style.width = percent+"%";
             return ;
         }
+
+        function printTitle(){
+
+            document.getByid
+            $("#title").text(title);
+            $("#artist").text(artist)
+            $("#albumArt").attr('src', albumArt);
+
+        }
+
+        function convertTime(value){
+            let seconds = Math.floor(value / 1000);
+            let minutes = Math.floor(seconds / 60);
+            seconds = seconds % 60;
+            minutes = minutes.toString().padStart(2, '0');
+            seconds = seconds.toString().padStart(2, '0');
+            // '${minutes}:{$seconds}'
+            return `${minutes}:${seconds}`;
+
+        }
+
+
+
+        setInterval(() => {
+            console.log('interbal');
+            getTrackInfo();
+            $("#timeDisplay").text(`${convertTime(progressMs)} / ${convertTime(durationMs)}`);
+            // loadLyrics(title, artist);
+        }, 2000);
+
+        setInterval(() => {
+            console.log('abc');
+            progressMs = progressMs + 100;
+            if(progressMs > durationMs) {
+                progressMs = progressMs - 100;
+                getTrackInfo();
+            }
+            updateLyrics()
+            $("#timeDisplay").text(`${convertTime(progressMs)} / ${convertTime(durationMs)}`);
+            printProgressBar();
+        }, 100);
+
+
+
+        function getTrackInfo() {
+            $.ajax({
+                url: 'http://localhost/spotify/getCurrentTrack',
+                type: 'GET',
+                success: function(data) {
+                    title = data['title'];
+                    artist = data['artist'];
+                    albumArt = data['albumArt'];
+                    durationMs = data['durationMs'];
+                    progressMs = data['progressMs'];
+                    printTitle();
+                    if(title !== oldTitle) getLyrics(title, artist);
+                    console.log('aaaaa')
+                    oldTitle = title;
+
+                    $("#timeDisplay").text(`${convertTime(progressMs)} / ${convertTime(durationMs)}`);
+                },
+                error: function(error) {
+                    console.error('Error fetching track info:', error);
+                }
+            });
+        }
+
 </script>
+
+</html>
