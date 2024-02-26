@@ -130,7 +130,7 @@
 
         function getTrackInfo() {
             $.ajax({
-                url: 'http://localhost/spotify/getCurrentTrack',
+                url: '/spotify/getCurrentTrack',
                 type: 'GET',
                 success: function(data) {
                     title = data['title'];

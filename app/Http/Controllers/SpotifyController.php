@@ -109,21 +109,6 @@ class SpotifyController extends Controller
         $cached_access_token = cache('access_token');
         $cached_refresh_token = cache('refresh_token');
 
-        // $response = Http::withHeaders([
-        //     'Authorization' => 'Bearer ' . $cached_access_token,
-        //     'Content-Type' => 'application/json',
-        // ])->put('https://api.spotify.com/v1/me/player/play');
-
-        // $result = $response->json();
-
-        // // 成功したかどうかを確認
-        // if ($response->successful()) {
-        //     return response()->json(['message' => 'Successfully played the current track']);
-        // } else {
-        //      // エラーが発生した場合Loginからやり直す。
-        //      // return redirect('spotify/login');
-        //     return response()->json(['error' => 'Failed to play the current track', 'details' => $result], $response->status());
-        // }
         return SpotifyController::sendSpotifyAPI('/me/player/pause', '');
     }
 
@@ -156,7 +141,7 @@ class SpotifyController extends Controller
 
         $value = compact('title', 'artist', 'albumArt', 'durationMs', 'progressMs');
         return $value;
-        return view('home')->with($value);
+        // return view('home')->with($value);
     }
 
 
