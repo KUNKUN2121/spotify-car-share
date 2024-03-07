@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/ress@4.0.0/dist/ress.min.css">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+<body>
+   <div class="top">
+        <!-- <progress max="100" value="80" id="progress"></progress> -->
+        <div class="progress-bar"></div>
+        <div class="time">
+            <p class="progress">01:12</p>
+            <!-- <p class="select-user">Select By Shun</p> -->
+            <p class="duration">03:20</p>
+        </div>
+        
+   </div>
+   <div class="main">
+        <div class="now-playing">
+            <img src="" alt="" class="album-art">
+            <div class="right">
+                <p class="title"></p>
+                <div class="artists">
+
+                </div>
+            </div>
+        </div>
+       
+        <div class="lyrics">
+            <p>アイシテルをもう何度 私、口にしたのだろう</p>
+            <strong>なのにどうして 今傍に誰も居ないの</strong>
+            <p>寂しさだけがこの胸に残っているのです</p>
+        </div>
+   </div>
+   <div class="nav">
+        <div class="left">
+            <p class="album-name">メリーゴーランド</p>
+            <div class="nav-btn">
+                <span class="material-symbols-outlined">visibility_off</span>
+                <span class="material-symbols-outlined">history</span>
+                <span class="material-symbols-outlined">settings</span>
+            </div>
+        <div class="queue-songs">
+            <div class="queue-song">
+                <p class="title">火をつけて</p>
+                <p class="artist">さらさ</p>
+            </div>
+            <div class="queue-song">
+                <p class="title">SPECIALZ</p>
+                <p class="artist">King Nuu</p>
+            </div>
+            <div class="queue-song">
+                <p class="title">First Love</p>
+                <p class="artist">宇多田ヒカル</p>
+            </div>
+            <!-- <div class="queue-song">
+                <p class="title">はっぴえんどを...</p>
+                <p class="artist">カネコアヤノ</p>
+            </div> -->
+        </div>
+        </div>
+        <div class="right">
+            <div class="serach">検索</div>
+            <div class="controller">
+                <p class="title">メリーゴー</p>
+                <p class="artist">優里</p>
+                <div class="play-controller">
+                    <span class="material-symbols-outlined">fast_rewind</span>
+                    <span class="material-symbols-outlined">pause</span>
+                    <span class="material-symbols-outlined">fast_forward</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="api.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+</body>
+<script src="script.js"></script>
+<script src="lyrics.js"></script>
+<script src="jquery.adaptive-backgrounds.js"></script>
+<script>
+    // ドミナントカラー抽出用
+    var adaptive_params = {
+    selector: '.album-art',
+    // 背景色を適用する対象セレクタ
+    parent: 'body',
+    // 背景色の明度に合わせてフォントカラーを変更するかどうか
+    normalizeTextColor: true,
+    // 明度に合わせたフォントカラー
+    normalizedTextColors: {dark: '#000', light: '#fff'},
+    // 背景色適用範囲
+    exclude: ['rgb(0,0,0)', 'rgba(255,255,255)'],
+    // 明度に合わせたクラス適用
+    lumaClasses: {light: 'ab-light', dark: 'ab-dark'}
+    };
+
+// 色適用実行
+// $.adaptiveBackground.run(adaptive_params);
+
+</script>
+</html>

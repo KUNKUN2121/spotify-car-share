@@ -26,4 +26,13 @@ Route::get('/spotify/play', [SpotifyController::class, 'playPause']);
 Route::get('/spotify/getCurrentTrack', [SpotifyController::class, 'getCurrentTrack']);
 
 
+
+Route::get('/spotify/now', [SpotifyController::class, 'getNow']);
+
+
 Route::get('/home', [SpotifyController::class, 'getAccessToken'])->name('getAccessToken');
+
+
+Route::get('/test', function () {
+    return view('test-vue');
+});

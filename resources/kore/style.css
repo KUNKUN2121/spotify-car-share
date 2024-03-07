@@ -1,0 +1,108 @@
+body{
+    background: rgb(218,192,168);background: linear-gradient(90deg, rgba(218,192,168,1) 0%, rgba(120,66,157,1) 100%);
+     font-family: "M PLUS Rounded 1c", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    /* height: 100%; */
+    min-height: -webkit-fill-available;
+}
+progress{
+    width: 100%;
+}
+
+.progress-bar{
+    width: 100%;
+    height: 8px;
+    background: #B8B8B8;
+    background: linear-gradient(#C0A2B0, #C0A2B0) no-repeat #B8B8B8;
+    /* width: 160px; */
+    /* width: 100;
+    height: 10px;
+    margin: 1em;
+    border-radius: 5px;
+    background: linear-gradient(#ccc, #ccc) no-repeat #eee; */
+}
+
+.time{
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 10px 0px;
+}
+.select-user{
+    text-align: center;
+}
+
+
+
+.main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin: 0px 16px 16px;
+}
+
+
+.album-art{
+    width: 40%;
+    height: 40%;
+    border-radius: 24px;
+}
+
+
+.now-playing{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.now-playing .artists {
+    display: flex;
+    justify-content: center
+}
+
+.now-playing .artists p {
+    /* margin-right: 20px; */
+}
+
+
+.lyrics{
+    margin: 20px auto 20px;
+    height: 150px;
+    font-size: 20px;
+    overflow:auto;
+}
+
+
+
+
+
+
+/* コントローラー */
+.nav{
+    display: flex;
+}
+.left{
+    width: 50%;
+}
+.right{
+    width: 50%;
+}
+
+
+.right{
+    margin: 0px 10px 10px;
+}
+.controller{
+    width: 100%;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 25px;
+    opacity: 0.5;
+    background: #BDCACA;
+    display: flex;
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll to Center</title>
+  <style>
+    #scrollContainer {
+      height: 200px; /* 任意の高さに設定 */
+      overflow-y: scroll;
+    }
+  </style>
+</head>
+<body>
+
+<div id="scrollContainer">
+  <p id='1'>test 1</p>
+  <p id='2'>test 2</p>
+  <p id='3'>test 3</p>
+  <p id='4'>test 4</p>
+  <p id='5'>test 5</p>
+  <p id='6'>test 6</p>
+  <p id='8'>test 8</p>
+  <p id='9'>test 9</p>
+  <p id='10'>test 10</p>
+  <p id='10'>test 10</p>
+  <p id='10'>test 10</p>
+  <p id='10'>test 10</p>
+  <p id='10'>test 10</p>
+  <p id='10'>test 10</p>
+  <!-- 他のpタグも追加 -->
+
+  <script>
+    function scrollToCenter(elementId) {
+      var container = document.getElementById('scrollContainer');
+      var targetElement = document.getElementById(elementId);
+
+      if (container && targetElement) {
+        var containerRect = container.getBoundingClientRect();
+        var targetRect = targetElement.getBoundingClientRect();
+        var offset = targetRect.top - containerRect.top - (containerRect.height - targetRect.height) / 2;
+
+        container.scrollTo({
+          top: container.scrollTop + offset,
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    // 例: IDが'4'の要素を中央にスクロールさせる
+    scrollToCenter('5');
+    
+    setTimeout( ()=>{
+        // 1秒後の処理
+        scrollToCenter('1');
+    }, 1000);
+    
+  </script>
+</div>
+
+</body>
+</html>
