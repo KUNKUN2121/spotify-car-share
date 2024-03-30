@@ -157,7 +157,8 @@ class SpotifyController extends Controller
                     'progress_ms' => $result['progress_ms'],
                     'links' => [
                         'album-art' => $result['item']['album']['images'][0]['url'],
-                        'song' => 'https"//songURL',
+                        'song-id' => $result['item']['id'],
+                        'song-url' => $result['item']['external_urls']['spotify'],
                         'album' => 'https"//albumURL',
                         'artist' => 'artistURL',
 
