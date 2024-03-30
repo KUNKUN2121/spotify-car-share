@@ -148,6 +148,8 @@ class SpotifyController extends Controller
             $result = SpotifyController::getApi($cachedAccessToken, '/v1/me/player/currently-playing')['result'];
             // dd($getApi);
             if(!$result == null){
+                $lyricsCon = new LyricsController;
+                // dd();
                 $musicInfo = [
                     'is_playing' =>  $result['is_playing'],
                     'title' =>  $result['item']['name'],
@@ -163,6 +165,7 @@ class SpotifyController extends Controller
                         'artist' => 'artistURL',
 
                     ],
+                    'lyrics'=> $lyricsCon->get($result['item']['id']),
                     // 'get_timestamp' => $result['timestamp'],
                     'get_spotify_timestamp' => now(),
                 ];

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LyricsController;
 use App\Http\Controllers\SpotifyController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ Route::get('/spotify/getCurrentTrack', [SpotifyController::class, 'getCurrentTra
 
 
 Route::get('/spotify/now', [SpotifyController::class, 'getNow']);
+Route::get('/spotify/lyrics', [LyricsController::class, 'index']);
 
 
 Route::get('/home', [SpotifyController::class, 'getAccessToken'])->name('getAccessToken');

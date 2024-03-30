@@ -4,8 +4,48 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c491b8531eec05ba41a11d9276a5749",
+    "content-hash": "dfd698b32606b4b48d46289bf796ce8d",
     "packages": [
+        {
+            "name": "akashrchandran/spotify-lyrics-api",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/akashrchandran/spotify-lyrics-api.git",
+                "reference": "ef2128bd1aade15777641f5e289dfacc51f8076a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/akashrchandran/spotify-lyrics-api/zipball/ef2128bd1aade15777641f5e289dfacc51f8076a",
+                "reference": "ef2128bd1aade15777641f5e289dfacc51f8076a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SpotifyLyricsApi\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Akash R Chandran",
+                    "email": "chandranrakash@gmail.com"
+                }
+            ],
+            "description": "A Rest API for fetching lyrics from Spotify which is powered by Musixmatch.",
+            "support": {
+                "issues": "https://github.com/akashrchandran/spotify-lyrics-api/issues",
+                "source": "https://github.com/akashrchandran/spotify-lyrics-api/tree/v2.1.0"
+            },
+            "time": "2024-01-18T16:59:37+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.11.0",
@@ -8152,5 +8192,5 @@
         "php": "^8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
