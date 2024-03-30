@@ -178,7 +178,7 @@ class SpotifyController extends Controller
             //DB処理
             $userToken = Token::find(1);
             $cachedAccessToken = $userToken->token;
-
+            // dd($cachedAccessToken);
             $result = SpotifyController::getApi($cachedAccessToken, '/v1/me/player/currently-playing')['result'];
             // dd($getApi);
             if(!$result == null){
@@ -237,7 +237,10 @@ class SpotifyController extends Controller
                 'response' => $response,
                 'result' => $result
             ];
-        }else{
+        }else if ($response->unauthorized()){
+            // 認証エラー
+            $this->refreshAccessToken();
+        }else {
             return null;
         }
 
