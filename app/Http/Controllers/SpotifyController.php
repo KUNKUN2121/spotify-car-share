@@ -170,7 +170,7 @@ class SpotifyController extends Controller
     public function getNow(){
         // 2秒ごとに更新する。
 
-        $value = Cache::remember('getNow', 2, function () {
+        $value = Cache::remember('getNow', 3, function () {
             // $cachedAccessToken = cache('access_token',
             // // キャッシュがない場合アクセストークンを再発行する。
             // SpotifyController::refreshAccessToken(), now()->addMinutes(59));
