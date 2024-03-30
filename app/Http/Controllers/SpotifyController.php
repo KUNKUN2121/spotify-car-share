@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use DateTime;
+use Carbon\Carbon;
+use App\Models\Token;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -11,6 +13,9 @@ use Illuminate\Support\Facades\Crypt;
 
 class SpotifyController extends Controller
 {
+
+
+
     public function index(){
 
         // $nowPlaying = SpotifyController::getCurrentTrack();
@@ -69,6 +74,19 @@ class SpotifyController extends Controller
             $access_token = $response['access_token'];
             $refresh_token = $response['refresh_token'];
 
+
+            // DB 処理
+            $userToken = Token::find(1);
+            $userToken->update([
+                "token" => $access_token,
+                "refresh_token" => $refresh_token,
+                "token_at" => Carbon::now(),
+                "refresh_token_at" => Carbon::now(),
+            ]);
+
+
+
+
             // cache(['access_token' => $access_token], now()->addMinutes(60));
             cache(['access_token' => $access_token]);
             cache(['refresh_token' => $refresh_token], now()->addDays(6));
@@ -86,6 +104,12 @@ class SpotifyController extends Controller
     public function refreshAccessToken()
     {
         $cached_refresh_token = cache('refresh_token');
+
+        // DB 処理
+        $userToken = Token::find(1);
+        $cached_refresh_token = $userToken->refresh_token;
+
+
         $response = Http::asForm()->post('https://accounts.spotify.com/api/token', [
             'grant_type' => 'refresh_token',
             'refresh_token' => $cached_refresh_token,
@@ -93,6 +117,12 @@ class SpotifyController extends Controller
             'client_secret' => config('services.spotify.client_secret'),
         ]);
         $access_token = $response['access_token'];
+
+        //DB処理
+        $userToken = $userToken->update([
+            "token" => $access_token,
+        ]);
+
         cache(['access_token' => $access_token], now()->addMinutes(59));
     }
 
@@ -141,9 +171,13 @@ class SpotifyController extends Controller
         // 2秒ごとに更新する。
 
         $value = Cache::remember('getNow', 2, function () {
-            $cachedAccessToken = cache('access_token',
-            // キャッシュがない場合アクセストークンを再発行する。
-            SpotifyController::refreshAccessToken(), now()->addMinutes(59));
+            // $cachedAccessToken = cache('access_token',
+            // // キャッシュがない場合アクセストークンを再発行する。
+            // SpotifyController::refreshAccessToken(), now()->addMinutes(59));
+
+            //DB処理
+            $userToken = Token::find(1);
+            $cachedAccessToken = $userToken->token;
 
             $result = SpotifyController::getApi($cachedAccessToken, '/v1/me/player/currently-playing')['result'];
             // dd($getApi);

@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Token extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'token',
+        'token_at',
+        'refresh_token',
+        'refresh_token_at',
+
+    ];
 }

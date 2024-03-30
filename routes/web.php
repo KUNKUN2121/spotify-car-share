@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LyricsController;
 use App\Http\Controllers\SpotifyController;
+use App\Http\Controllers\TokenController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,3 +40,7 @@ Route::get('/home', [SpotifyController::class, 'getAccessToken'])->name('getAcce
 Route::get('/test', function () {
     return view('test-vue');
 });
+
+
+Route::get('/spotify/admin', [AdminController::class, 'index']);
+Route::get('/spotify/token', [TokenController::class, 'index']);
