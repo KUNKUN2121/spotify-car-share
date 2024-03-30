@@ -171,19 +171,24 @@ class SpotifyController extends Controller
         // 2秒ごとに更新する。
 
         $value = Cache::remember('getNow', 3, function () {
-            // $cachedAccessToken = cache('access_token',
-            // // キャッシュがない場合アクセストークンを再発行する。
-            // SpotifyController::refreshAccessToken(), now()->addMinutes(59));
-
             //DB処理
             $userToken = Token::find(1);
             $cachedAccessToken = $userToken->token;
-            // dd($cachedAccessToken);
+
             $result = SpotifyController::getApi($cachedAccessToken, '/v1/me/player/currently-playing')['result'];
             // dd($getApi);
             if(!$result == null){
-                $lyricsCon = new LyricsController;
-                // dd();
+
+                if(cache('old_title') != $result['item']['name']){
+
+                    $lyricsCon = new LyricsController;
+                    // キャッシュを更新する
+                    cache(['old_title' => $result['item']['name']]);
+                    cache(['lyrics' => $lyricsCon->get($result['item']['id'])]);
+
+                    // $oldTitle = $result['item']['name'];
+                }
+
                 $musicInfo = [
                     'is_playing' =>  $result['is_playing'],
                     'title' =>  $result['item']['name'],
@@ -199,7 +204,7 @@ class SpotifyController extends Controller
                         'artist' => 'artistURL',
 
                     ],
-                    'lyrics'=> $lyricsCon->get($result['item']['id']),
+                    'lyrics' => cache('lyrics'),
                     // 'get_timestamp' => $result['timestamp'],
                     'get_spotify_timestamp' => now(),
                 ];
@@ -208,7 +213,11 @@ class SpotifyController extends Controller
             }
             return $musicInfo;
         });
+
         if($value != []){
+
+            $lyricsCon = new LyricsController;
+            // $value['lyrics'] = $lyricsCon->get($value['item']['id']);
             $value['access_timestamp'] = now();
         }
 

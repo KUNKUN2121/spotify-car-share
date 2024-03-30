@@ -56,7 +56,7 @@ class LyricsController extends Controller
 
         $spotify->checkTokenExpire();
         $reponse = $spotify->getLyrics( track_id: $trackId );
-        $value =  $this->make_response( $spotify, $reponse, $format );
+        $value =  $this->make_response( $spotify, $reponse, $format ,now());
         return $value;
 
     }
@@ -77,7 +77,8 @@ class LyricsController extends Controller
            'error' => false,
            'syncType' => $json_res[ 'lyrics' ][ 'syncType' ],
            // 'lines' => $lines
-           'syncedLyrics' => $lines
+           'syncedLyrics' => $lines,
+           'timestamp' => now()
        ];
     //    return json_encode( $response );
        return $response;
