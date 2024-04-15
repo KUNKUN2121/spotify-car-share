@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->string('spotify_id');
-            $table->text('token')->nullable();
-            $table->text('refresh_token')->nullable();
-            $table->dateTime('token_at')->nullable();
-            $table->dateTime('refresh_token_at')->nullable();
+            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('room_id');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('rooms');
     }
 };

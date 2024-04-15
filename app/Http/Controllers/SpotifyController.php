@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use DateTime;
 use Carbon\Carbon;
 use App\Models\Token;
+use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Laravel\Socialite\Facades\Socialite;
 
 class SpotifyController extends Controller
 {
@@ -60,7 +63,7 @@ class SpotifyController extends Controller
     // アクセストークン リフレッシュトークンを取得する。
     public function handleCallback(Request $request)
     {
-
+        dd($request);
         $code = $request->input('code');
         $response = Http::asForm()->post('https://accounts.spotify.com/api/token', [
             'grant_type' => 'authorization_code',
@@ -97,7 +100,32 @@ class SpotifyController extends Controller
         }
 
 
-        return redirect('spotify/');
+        return redirect('/admin');
+    }
+    public function handleCallback2(Request $request)
+    {
+        // ログイン情報を取得する
+        $provided_user = Socialite::driver('spotify')->stateless()->user();
+
+        // SpotifyのユーザIDが token に存在するかを確認する
+        $user = User::where('spotify_id', $provided_user->id)->first();
+
+        if($user == null){
+            $user = User::create([
+                'spotify_id'=> $provided_user->id,
+            ]);
+        }
+
+        Auth::login($user);
+        // dd(Auth::login($user));
+
+        // dd( Auth::user());
+        return redirect('/admin');
+    }
+
+    public function admin(Request $request){
+        // Auth::user();
+        return view('admins.index');
     }
 
     // リフレッシュアクセストークン

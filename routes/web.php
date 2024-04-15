@@ -1,10 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TokenController;
 use App\Http\Controllers\LyricsController;
 use App\Http\Controllers\SpotifyController;
-use App\Http\Controllers\TokenController;
-use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +23,15 @@ Route::get('/', function () {
 });
 
 Route::get('/spotify', [SpotifyController::class, 'index']);
-Route::get('/spotify/login', [SpotifyController::class, 'redirectToSpotify']);
-Route::get('/spotify/callback', [SpotifyController::class, 'handleCallback']);
+// Route::get('/admin/login', [SpotifyController::class, 'redirectToSpotify']);
+Route::get('/admin/login', function () {
+    return Socialite::driver('spotify')->redirect();
+});
+
+
+
+Route::get('/admin/callback', [SpotifyController::class, 'handleCallback2']);
+Route::get('/admin', [SpotifyController::class, 'admin']);
 
 Route::get('/spotify/play', [SpotifyController::class, 'playPause']);
 Route::get('/spotify/getCurrentTrack', [SpotifyController::class, 'getCurrentTrack']);
