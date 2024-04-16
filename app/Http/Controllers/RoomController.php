@@ -33,6 +33,7 @@ class RoomController extends Controller
         // 401エラーの場合はトークンを更新して再度取得を試みる
         if ($result === 401) {
             $this->refreshAndRetry($owner->spotify_id, $roomId);
+            return $this->getRoomGetNow($roomId);
         }
 
         // 異なる曲が再生された場合は歌詞を取得する
