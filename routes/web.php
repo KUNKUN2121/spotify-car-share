@@ -5,6 +5,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\LyricsController;
+use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SpotifyController;
 
 /*
@@ -18,20 +19,24 @@ use App\Http\Controllers\SpotifyController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('panels.index');
+// });
+
+Route::get('/', [RoomController::class, 'index']);
 
 Route::get('/spotify', [SpotifyController::class, 'index']);
-// Route::get('/admin/login', [SpotifyController::class, 'redirectToSpotify']);
-Route::get('/admin/login', function () {
-    return Socialite::driver('spotify')->redirect();
-});
 
+// ログイン機能
+Route::get('/admin/login', [SpotifyController::class, 'redirectToSpotify'])->name('admin.login');
+Route::get('/admin/callback', [SpotifyController::class, 'handleCallback']);
 
+Route::group(['middleware' => 'auth'], function () {
+    //この中に以前の記事で書いたルーティングのコードを書いていく
+    Route::get('/admin', [SpotifyController::class, 'admin']);
+    Route::get('/admin/create', [RoomController::class, 'create']);
+  });
 
-Route::get('/admin/callback', [SpotifyController::class, 'handleCallback2']);
-Route::get('/admin', [SpotifyController::class, 'admin']);
 
 Route::get('/spotify/play', [SpotifyController::class, 'playPause']);
 Route::get('/spotify/getCurrentTrack', [SpotifyController::class, 'getCurrentTrack']);

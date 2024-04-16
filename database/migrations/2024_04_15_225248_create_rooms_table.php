@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('room_id');
+            $table->string('spotify_id');
+            $table->string('room_id')->nullable();
+            $table->datetime('expiration')->nullable();
             $table->timestamps();
         });
     }

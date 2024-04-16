@@ -31,26 +31,6 @@ class SpotifyController extends Controller
         // return view('home')->with($nowPlaying);
     }
 
-    public function sendSpotifyAPI($url, $header){
-        // ここでアクセストークンを取得する。今後はDBからかな
-        $cached_access_token = cache('access_token');
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $cached_access_token,
-            'Content-Type' => 'application/json',
-        // ])->put('https://api.spotify.com/v1/me/player/pause');
-        ])->put("https://api.spotify.com/v1". $url );
-        $result = $response->json();
-        // 成功したかどうかを確認
-        if ($response->successful()) {
-            return $response;
-            return response()->json(['message' => 'Successfull']);
-        } else {
-             // エラーが発生した場合Loginからやり直す。
-            //  return redirect('spotify/login');
-            return response()->json(['error' => 'Failed ', 'details' => $result], $response->status());
-        }
-
-    }
 
     // 初回ログイン
     public function redirectToSpotify()
@@ -60,10 +40,10 @@ class SpotifyController extends Controller
         return redirect($url);
     }
 
-    // アクセストークン リフレッシュトークンを取得する。
+    //
     public function handleCallback(Request $request)
     {
-        dd($request);
+        // ログイン情報を取得する
         $code = $request->input('code');
         $response = Http::asForm()->post('https://accounts.spotify.com/api/token', [
             'grant_type' => 'authorization_code',
@@ -72,54 +52,27 @@ class SpotifyController extends Controller
             'client_id' => config('services.spotify.client_id'),
             'client_secret' => config('services.spotify.client_secret'),
         ]);
-
-        try {
+        try{
             $access_token = $response['access_token'];
             $refresh_token = $response['refresh_token'];
-
-
-            // DB 処理
-            $userToken = Token::find(1);
-            $userToken->update([
-                "token" => $access_token,
-                "refresh_token" => $refresh_token,
-                "token_at" => Carbon::now(),
-                "refresh_token_at" => Carbon::now(),
-            ]);
-
-
-
-
-            // cache(['access_token' => $access_token], now()->addMinutes(60));
-            cache(['access_token' => $access_token]);
-            cache(['refresh_token' => $refresh_token], now()->addDays(6));
+            $result = SpotifyController::getApi($access_token, "/v1/me");
+            $resultUserId = $result['result']['id'];
+            //code...
         } catch (\Throwable $th) {
-            dd($th);
-            // エラーが発生した場合Loginからやり直す。
-            return redirect('spotify/login');
+            throw $th;
         }
 
-
-        return redirect('/admin');
-    }
-    public function handleCallback2(Request $request)
-    {
-        // ログイン情報を取得する
-        $provided_user = Socialite::driver('spotify')->stateless()->user();
-
         // SpotifyのユーザIDが token に存在するかを確認する
-        $user = User::where('spotify_id', $provided_user->id)->first();
-
+        $user = User::where('spotify_id', $resultUserId)->first();
         if($user == null){
             $user = User::create([
-                'spotify_id'=> $provided_user->id,
+                'spotify_id'=> $resultUserId,
+                'token' => $access_token,
+                'refresh_token' => $refresh_token,
             ]);
         }
 
         Auth::login($user);
-        // dd(Auth::login($user));
-
-        // dd( Auth::user());
         return redirect('/admin');
     }
 
@@ -129,37 +82,30 @@ class SpotifyController extends Controller
     }
 
     // リフレッシュアクセストークン
-    public function refreshAccessToken()
+    public function refreshAccessToken($userId)
     {
-        $cached_refresh_token = cache('refresh_token');
-
+        // USERID から 取得して いれる。
         // DB 処理
-        $userToken = Token::find(1);
-        $cached_refresh_token = $userToken->refresh_token;
+        $user = User::where('spotify_id' , $userId)->first();
+
+
+        $refresh_token = $user->refresh_token;
 
 
         $response = Http::asForm()->post('https://accounts.spotify.com/api/token', [
             'grant_type' => 'refresh_token',
-            'refresh_token' => $cached_refresh_token,
+            'refresh_token' => $refresh_token,
             'client_id' => config('services.spotify.client_id'),
             'client_secret' => config('services.spotify.client_secret'),
         ]);
         $access_token = $response['access_token'];
 
         //DB処理
-        $userToken = $userToken->update([
+        $userToken = $user->update([
             "token" => $access_token,
         ]);
 
-        cache(['access_token' => $access_token], now()->addMinutes(59));
-    }
 
-    public function playPause(){
-
-        $cached_access_token = cache('access_token');
-        $cached_refresh_token = cache('refresh_token');
-
-        return SpotifyController::sendSpotifyAPI('/me/player/pause', '');
     }
 
     public function getCurrentTrack()
@@ -195,28 +141,16 @@ class SpotifyController extends Controller
 
 
 
-    public function getNow(){
+    public function getNow($accessToken){
         // 2秒ごとに更新する。
+            $value = SpotifyController::getApi($accessToken, '/v1/me/player/currently-playing');
 
-        $value = Cache::remember('getNow', 1, function () {
-            //DB処理
-            $userToken = Token::find(1);
-            $cachedAccessToken = $userToken->token;
+            if($value == 401){
+                return 401;
+            }
 
-            $result = SpotifyController::getApi($cachedAccessToken, '/v1/me/player/currently-playing')['result'];
-            // dd($getApi);
+            $result = $value['result'];
             if(!$result == null){
-
-                if(cache('old_title') != $result['item']['name']){
-
-                    $lyricsCon = new LyricsController;
-                    // キャッシュを更新する
-                    cache(['old_title' => $result['item']['name']]);
-                    cache(['lyrics' => $lyricsCon->get($result['item']['id'])]);
-
-                    // $oldTitle = $result['item']['name'];
-                }
-
                 $musicInfo = [
                     'is_playing' =>  $result['is_playing'],
                     'title' =>  $result['item']['name'],
@@ -232,25 +166,20 @@ class SpotifyController extends Controller
                         'artist' => 'artistURL',
 
                     ],
-                    'lyrics' => cache('lyrics'),
+
                     // 'get_timestamp' => $result['timestamp'],
                     'get_spotify_timestamp' => now(),
                 ];
             }else{
                 $musicInfo = null;
             }
-            return $musicInfo;
-        });
 
-        if($value != []){
-
-            $lyricsCon = new LyricsController;
-            // $value['lyrics'] = $lyricsCon->get($value['item']['id']);
+        if($musicInfo != []){
             $value['access_timestamp'] = now();
         }
-
+        return $musicInfo;
         // return $value;
-        return response()->json($value,200, array('Access-Control-Allow-Origin' => '*'));
+        // return response()->json($value,200, array('Access-Control-Allow-Origin' => '*'));
 
 
     }
@@ -265,7 +194,6 @@ class SpotifyController extends Controller
             'Authorization' => 'Bearer ' . $token,
             'Accept-Language' =>  'ja',
         ])->get($url);
-
         $result = $response->json();
 
         if ($response->successful()) {
@@ -276,7 +204,8 @@ class SpotifyController extends Controller
             ];
         }else if ($response->unauthorized()){
             // 認証エラー
-            $this->refreshAccessToken();
+            // $this->refreshAccessToken();
+            return 401;
         }else {
             return null;
         }
