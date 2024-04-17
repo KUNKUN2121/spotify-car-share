@@ -4,25 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Room;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
-
 class RoomController extends Controller
 {
     public function index(Request $request){
 
         $roomId = $request->input('room_id');
-        $result = RoomController::getRoomGetNow($roomId);
+        $result = RoomController::getRoomNow($roomId);
         return response()->json($result,200, array('Access-Control-Allow-Origin' => '*'));
 
 
     }
 
-    public function getRoomGetNow($roomId){
-        // ルームとオーナーを取得
+    public function getRoomNow(Request $request){
+        $roomId = $request->input('room_id');
         $room = Room::where('room_id', $roomId)->firstOrFail();
         $owner = User::where('spotify_id', $room->spotify_id)->firstOrFail();
         $ownerToken = $owner->token;
@@ -33,14 +29,13 @@ class RoomController extends Controller
         // 401エラーの場合はトークンを更新して再度取得を試みる
         if ($result === 401) {
             $this->refreshAndRetry($owner->spotify_id, $roomId);
-            return $this->getRoomGetNow($roomId);
+            return $this->getRoomNow($request);
         }
 
-        // 異なる曲が再生された場合は歌詞を取得する
+        // 歌詞を追加する
         $this->checkAndFetchLyrics($roomId, $result);
 
-        // 結果を返す
-        return $result;
+             return response()->json($result,200, array('Access-Control-Allow-Origin' => '*'));
     }
 
     private function getSpotifyResult($ownerToken, $roomId) {
@@ -53,7 +48,6 @@ class RoomController extends Controller
     private function refreshAndRetry($ownerId, $roomId) {
         $spotifyController = new SpotifyController;
         $spotifyController->refreshAccessToken($ownerId);
-        return $this->getRoomGetNow($roomId);
     }
 
     private function checkAndFetchLyrics($roomId, &$result) {
@@ -64,7 +58,6 @@ class RoomController extends Controller
             if(isset($cacheResult['links']['song-id'])){
                 if($result['links']['song-id'] != $cacheResult['links']['song-id'] || !isset($cacheResult['lyrics'])){
                     // songIdが変わった場合の処理
-                    // echo '実行しました。';
                     $LyricsController = new LyricsController;
                     $result['lyrics'] = $LyricsController->get($result['links']['song-id']);
                 } else {
@@ -74,12 +67,11 @@ class RoomController extends Controller
                     }
                 }
             }else{
-                // echo 'キャッシュなし実行しました。2';
                 $LyricsController = new LyricsController;
                 $result['lyrics'] = $LyricsController->get($result['links']['song-id']);
             }
             // 結果をキャッシュする
-            cache([$roomId.'_result' => $result], 300);
+            cache([$roomId.'_result' => $result], 600);
         }
     }
 

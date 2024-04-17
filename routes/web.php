@@ -24,6 +24,7 @@ use App\Http\Controllers\SpotifyController;
 // });
 
 Route::get('/', [RoomController::class, 'index']);
+Route::get('/api/now', [RoomController::class, 'getRoomNow']);
 
 Route::get('/spotify', [SpotifyController::class, 'index']);
 
