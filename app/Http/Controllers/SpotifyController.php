@@ -154,7 +154,7 @@ class SpotifyController extends Controller
                 $musicInfo = [
                     'is_playing' =>  $result['is_playing'],
                     'title' =>  $result['item']['name'],
-                    'artist' => $result['item']['artists'],
+                    'artists' => $result['item']['artists'],
                     'album' => $result['item']['album']['name'],
                     'duration_ms' => $result['item']['duration_ms'],
                     'progress_ms' => $result['progress_ms'],
