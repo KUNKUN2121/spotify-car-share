@@ -10,9 +10,6 @@ class RoomController extends Controller
 {
     public function index(Request $request){
 
-        $roomId = $request->input('room_id');
-        $result = RoomController::getRoomNow($roomId);
-        return response()->json($result,200, array('Access-Control-Allow-Origin' => '*'));
 
 
     }
@@ -39,6 +36,7 @@ class RoomController extends Controller
     }
 
     private function getSpotifyResult($ownerToken, $roomId) {
+        // キャシュ時間変更
         return Cache::remember($roomId, 1, function () use ($ownerToken) {
             $spotifyController = new SpotifyController;
             return $spotifyController->getNow($ownerToken);
