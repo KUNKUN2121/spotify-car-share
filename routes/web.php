@@ -25,6 +25,7 @@ use App\Http\Controllers\SpotifyController;
 
 Route::get('/', [RoomController::class, 'index']);
 Route::get('/api/now', [RoomController::class, 'getRoomNow']);
+Route::get('/api/room_queue_list', [RoomController::class, 'getRoomQueueList']);
 
 Route::get('/spotify', [SpotifyController::class, 'index']);
 
@@ -50,11 +51,8 @@ Route::get('/spotify/lyrics', [LyricsController::class, 'index']);
 
 Route::get('/home', [SpotifyController::class, 'getAccessToken'])->name('getAccessToken');
 
-
-Route::get('/test', function () {
-    return view('test-vue');
-});
-
+// getQueueList
+Route::get('/test', [SpotifyController::class, 'getQueueList'])->name('getQueueList');
 
 Route::get('/spotify/admin', [AdminController::class, 'index']);
 Route::get('/spotify/token', [TokenController::class, 'index']);

@@ -35,7 +35,7 @@ class SpotifyController extends Controller
     // 初回ログイン
     public function redirectToSpotify()
     {
-        $scopes = 'user-read-private user-read-email user-modify-playback-state user-read-currently-playing' ; // 必要なスコープを指定
+        $scopes = 'user-read-private user-read-email user-modify-playback-state user-read-currently-playing user-read-playback-state' ; // 必要なスコープを指定
         $url = "https://accounts.spotify.com/authorize?client_id=" . config('services.spotify.client_id') . "&response_type=code&redirect_uri=" . config('services.spotify.redirect_uri') . "&scope=" . $scopes;
         return redirect($url);
     }
@@ -182,8 +182,27 @@ class SpotifyController extends Controller
         // return response()->json($value,200, array('Access-Control-Allow-Origin' => '*'));
 
 
+
     }
 
+
+    public function getQueueList($accessToken, $num){
+        $result = $this->getApi($accessToken, "/v1/me/player/queue");
+        if($result == 401){
+            return 401;
+        }
+        $queueList =$result['result']['queue'];
+        // dd($result['result']);
+        if($result['result']['queue'] == []){
+            return [];
+        }
+        for($i=0; $i < $num; $i++){
+            $value['queue'][$i] = $queueList[$i];
+        }
+        // $result['get_spotify_timestamp'] = now();
+        return $value;
+
+    }
 
     // API取得用 240229
     public function getApi($token, $request){

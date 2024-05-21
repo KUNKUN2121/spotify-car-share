@@ -21,7 +21,7 @@ class RoomController extends Controller
         $ownerToken = $owner->token;
 
         // SpotifyControllerを使用して現在の情報を取得
-        $result = $this->getSpotifyResult($ownerToken,$roomId);
+        $result = $this->getRoomNowResult($ownerToken,$roomId);
 
         // 401エラーの場合はトークンを更新して再度取得を試みる
         if ($result === 401) {
@@ -31,15 +31,18 @@ class RoomController extends Controller
 
         // 歌詞を追加する
         $this->checkAndFetchLyrics($roomId, $result);
-
              return response()->json($result,200, array('Access-Control-Allow-Origin' => '*'));
     }
 
-    private function getSpotifyResult($ownerToken, $roomId) {
+    private function getRoomNowResult($ownerToken, $roomId) {
         // キャシュ時間変更
         return Cache::remember($roomId, 1, function () use ($ownerToken) {
             $spotifyController = new SpotifyController;
-            return $spotifyController->getNow($ownerToken);
+            $value = $spotifyController->getNow($ownerToken);
+            $queue =$spotifyController->getQueueList($ownerToken, 3);
+            if($queue == 401) return 401;
+            if($queue != []) $value += $queue;
+            return $value;
         });
     }
 
