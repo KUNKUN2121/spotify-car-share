@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->string('spotify_id');
             $table->string('room_id')->nullable();
+            $table->string('owner_spotify_id');
             $table->datetime('expiration')->nullable();
             $table->timestamps();
         });

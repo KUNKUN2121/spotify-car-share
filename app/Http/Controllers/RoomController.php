@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Room;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+
 class RoomController extends Controller
 {
     public function index(Request $request){
@@ -13,11 +16,27 @@ class RoomController extends Controller
 
 
     }
+    public function create(Request $request){
+        $myId = Auth::user()->id;
+        $roomId = Str::random(8);
+        $spotifyId = User::where('id', $myId)->first()->spotify_id;
+
+        $result = Room::where('owner_spotify_id', $spotifyId)->first();
+
+        if($result != null){
+            return null;
+        }
+        Room::create([
+            'owner_spotify_id'=> $spotifyId,
+            'room_id' => $roomId,
+        ]);
+    }
+
 
     public function getRoomNow(Request $request){
         $roomId = $request->input('room_id');
         $room = Room::where('room_id', $roomId)->firstOrFail();
-        $owner = User::where('spotify_id', $room->spotify_id)->firstOrFail();
+        $owner = User::where('spotify_id', $room->owner_spotify_id)->firstOrFail();
         $ownerToken = $owner->token;
 
         // SpotifyControllerを使用して現在の情報を取得
@@ -74,6 +93,13 @@ class RoomController extends Controller
             // 結果をキャッシュする
             cache([$roomId.'_result' => $result], 600);
         }
+    }
+
+    // ルームのOwnerIDを返す
+    public function gerRoomOwnerId($roomId){
+        $room = Room::where('room_id', $roomId)->firstOrFail();
+        $owner = User::where('spotify_id', $room->spotify_id)->firstOrFail();
+        $ownerToken = $owner->token;
     }
 
 }

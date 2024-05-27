@@ -5,6 +5,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\LyricsController;
+use App\Http\Controllers\QueueController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SpotifyController;
 
@@ -52,7 +53,7 @@ Route::get('/spotify/lyrics', [LyricsController::class, 'index']);
 Route::get('/home', [SpotifyController::class, 'getAccessToken'])->name('getAccessToken');
 
 // getQueueList
-Route::get('/test', [SpotifyController::class, 'getQueueList'])->name('getQueueList');
+Route::get('/test', [QueueController::class, 'addUserQueueList'])->name('addUserQueueList');
 
 Route::get('/spotify/admin', [AdminController::class, 'index']);
 Route::get('/spotify/token', [TokenController::class, 'index']);
