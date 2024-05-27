@@ -54,6 +54,8 @@ Route::get('/home', [SpotifyController::class, 'getAccessToken'])->name('getAcce
 
 // getQueueList
 Route::get('/test', [QueueController::class, 'addUserQueueList'])->name('addUserQueueList');
+Route::get('/test2', [QueueController::class, 'addQueueApi'])->name('addQueueApi');
+Route::get('/test3', [QueueController::class, 'checkAdd'])->name('checkAdd');
 
 Route::get('/spotify/admin', [AdminController::class, 'index']);
 Route::get('/spotify/token', [TokenController::class, 'index']);

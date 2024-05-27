@@ -53,11 +53,15 @@ class RoomController extends Controller
              return response()->json($result,200, array('Access-Control-Allow-Origin' => '*'));
     }
 
-    private function getRoomNowResult($ownerToken, $roomId) {
+    public function getRoomNowResult($ownerToken, $roomId) {
         // キャシュ時間変更
-        return Cache::remember($roomId, 1, function () use ($ownerToken) {
+        return Cache::remember($roomId, 1, function () use ($ownerToken, $roomId) {
+            $queCon = new QueueController();
             $spotifyController = new SpotifyController;
             $value = $spotifyController->getNow($ownerToken);
+            $queCon->checkAdd($roomId, $value['links']['song-id']);
+
+
             $queue =$spotifyController->getQueueList($ownerToken, 3);
             if($queue == 401) return 401;
             if($queue != []) $value += $queue;
@@ -95,11 +99,13 @@ class RoomController extends Controller
         }
     }
 
-    // ルームのOwnerIDを返す
-    public function gerRoomOwnerId($roomId){
+    // ルームのtokenを返す
+    public function gerRoomOwnerToken($roomId){
         $room = Room::where('room_id', $roomId)->firstOrFail();
-        $owner = User::where('spotify_id', $room->spotify_id)->firstOrFail();
+        $owner = User::where('spotify_id', $room->owner_spotify_id)->firstOrFail();
         $ownerToken = $owner->token;
+        return $ownerToken;
     }
+
 
 }

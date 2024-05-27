@@ -143,8 +143,8 @@ class SpotifyController extends Controller
 
     public function getNow($accessToken){
         // 2秒ごとに更新する。
-            $value = SpotifyController::getApi($accessToken, '/v1/me/player/currently-playing');
-
+            // $value = SpotifyController::getApi($accessToken, '/v1/me/player/currently-playing');
+            $value = SpotifyController::getApi($accessToken, '/v1/me/player');
             if($value == 401){
                 return 401;
             }
@@ -153,6 +153,7 @@ class SpotifyController extends Controller
             if(!$result == null){
                 $musicInfo = [
                     'is_playing' =>  $result['is_playing'],
+                    // 'device_id' =>  $result['device']['id'],
                     'title' =>  $result['item']['name'],
                     'artists' => $result['item']['artists'],
                     'album' => $result['item']['album']['name'],
@@ -214,7 +215,34 @@ class SpotifyController extends Controller
             'Accept-Language' =>  'ja',
         ])->get($url);
         $result = $response->json();
+        if ($response->successful()) {
 
+            return [
+                'response' => $response,
+                'result' => $result
+            ];
+        }else if ($response->unauthorized()){
+            // 認証エラー
+            // $this->refreshAccessToken();
+            return 401;
+        }else {
+            return null;
+        }
+
+        if($result == null){
+            return response()->json(['error' => '現在再生していません。', 'details' => $result], $response->status());
+        }
+    }
+
+    public function postApi($token, $request){
+
+        $url = "https://api.spotify.com".$request;
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept-Language' =>  'ja',
+        ])->post($url);
+        $result = $response->json();
         if ($response->successful()) {
 
             return [
