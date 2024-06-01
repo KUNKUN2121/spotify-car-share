@@ -102,4 +102,12 @@ class RoomController extends Controller
         $ownerToken = $owner->token;
     }
 
+    // ルームのtokenを返す
+    public function getRoomOwnerToken($roomId){
+        $room = Room::where('room_id', $roomId)->firstOrFail();
+        $owner = User::where('spotify_id', $room->owner_spotify_id)->firstOrFail();
+        $ownerToken = $owner->token;
+        return $ownerToken;
+    }
+
 }

@@ -234,5 +234,27 @@ class SpotifyController extends Controller
         }
     }
 
+    public function postApi($token, $request){
+        $url = "https://api.spotify.com".$request;
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept-Language' =>  'ja',
+        ])->post($url);
+        $result = $response->json();
+        if ($response->successful()) {
+            return [
+                'response' => $response,
+                'result' => $result
+            ];
+        }else if ($response->unauthorized()){
+            // 認証エラー
+            // $this->refreshAccessToken();
+            return 401;
+        }else {
+            return 500;
+        }
+        return 500;
+    }
+
 
 }

@@ -69,11 +69,16 @@ class LyricsController extends Controller
 
        if ( $json_res === null || !isset( $json_res[ 'lyrics' ] ) ) {
            http_response_code( 404 );
-           return json_encode( [ 'error' => true, 'message' => 'lyrics for this track is not available on spotify!' ] );
+           return ['response' => 204,'message'=>'no lyrics'];
        }
        $lines = $format == 'lrc' ? $this->getLrcLyrics( $spotify , $json_res[ 'lyrics' ][ 'lines' ] ) : $json_res[ 'lyrics' ][ 'lines' ];
 
+    //    dd($json_res['lyrics']['syncType']);
+        if($json_res['lyrics']['syncType'] == "LINE_SYNCED") $resStats = 200;
+        else if($json_res['lyrics']['syncType'] == "UNSYNCED") $resStats = 201;
+        else $resStats = 500;
        $response = [
+           'response' => $resStats,
            'error' => false,
            'syncType' => $json_res[ 'lyrics' ][ 'syncType' ],
            // 'lines' => $lines

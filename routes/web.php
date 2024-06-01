@@ -7,7 +7,9 @@ use App\Http\Controllers\TokenController;
 use App\Http\Controllers\LyricsController;
 use App\Http\Controllers\QueueController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SpotifyController;
+use SpotifyLyricsApi\Spotify;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +29,15 @@ use App\Http\Controllers\SpotifyController;
 Route::get('/', [RoomController::class, 'index']);
 Route::get('/api/now', [RoomController::class, 'getRoomNow']);
 Route::get('/api/room_queue_list', [RoomController::class, 'getRoomQueueList']);
+
+// 曲の検索
+Route::get('/api/search', [SearchController::class, 'getSearchList']);
+// 曲の追加
+Route::post('/api/add', [QueueController::class, 'addQueueApi']);
+//csrf
+Route::get('/api/csrf-token', function() {
+    return response()->json(['token' => csrf_token()]);
+});
 
 Route::get('/spotify', [SpotifyController::class, 'index']);
 
@@ -53,7 +64,9 @@ Route::get('/spotify/lyrics', [LyricsController::class, 'index']);
 Route::get('/home', [SpotifyController::class, 'getAccessToken'])->name('getAccessToken');
 
 // getQueueList
-Route::get('/test', [QueueController::class, 'addUserQueueList'])->name('addUserQueueList');
+Route::get('/test', [SpotifyController::class, 'getCsrf'])->name('getCsrf');
+
+Route::get('/test2', [SearchController::class, 'getSearchList'])->name('getSearchList');
 
 Route::get('/spotify/admin', [AdminController::class, 'index']);
 Route::get('/spotify/token', [TokenController::class, 'index']);

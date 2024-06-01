@@ -41,8 +41,16 @@ class QueueController extends Controller
     /**
      * SpotifyAPIに追加する関数
      */
-    public function addQueueApi(){
-
+    public function addQueueApi(Request $request){
+        // dd($request);
+        $musicId = $request->input('uri');
+        $roomId = $request->input('room_id');
+        $roomCtr = new RoomController();
+        $sptCtr = new SpotifyController();
+        $ownerToken = $roomCtr->getRoomOwnerToken($roomId);
+        $uri = "spotify:track:" . $musicId;
+        $value = $sptCtr->postApi($ownerToken, "/v1/me/player/queue" . "?uri=" . $musicId);
+        return response()->json($value,200, array('Access-Control-Allow-Origin' => '*'));
     }
 
     public function getQueueApi($roomId){
