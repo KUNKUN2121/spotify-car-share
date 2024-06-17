@@ -35,7 +35,7 @@ class SpotifyController extends Controller
     // 初回ログイン
     public function redirectToSpotify()
     {
-        $scopes = 'user-read-private user-read-email user-modify-playback-state user-read-currently-playing user-read-playback-state' ; // 必要なスコープを指定
+        $scopes = 'user-read-private user-read-email user-modify-playback-state user-read-currently-playing user-read-playback-state user-read-recently-played' ; // 必要なスコープを指定
         $url = "https://accounts.spotify.com/authorize?client_id=" . config('services.spotify.client_id') . "&response_type=code&redirect_uri=" . config('services.spotify.redirect_uri') . "&scope=" . $scopes;
         return redirect($url);
     }
