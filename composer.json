@@ -12,6 +12,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.12",
         "laravel/tinker": "^2.8",
+        "laravel/ui": "^4.5",
         "socialiteproviders/spotify": "^4.1"
     },
     "require-dev": {

@@ -12,4 +12,14 @@ import './bootstrap';
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-import './components/Example';
+
+import ReactDOM from "react-dom/client";
+import { render } from 'react-dom';
+
+function App() {
+    return <h1>Hello World</h1>;
+}
+
+const root = ReactDOM.createRoot(document.getElementById("app"));
+root.render(<App />);
+

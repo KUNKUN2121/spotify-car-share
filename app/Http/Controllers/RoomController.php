@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\Cache;
 class RoomController extends Controller
 {
     public function index(Request $request){
-
-
-
+        return view('app');
     }
     public function create(Request $request){
         $myId = Auth::user()->id;

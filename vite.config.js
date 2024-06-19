@@ -1,13 +1,16 @@
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue"; //add this line
-import laravel from "laravel-vite-plugin";
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
     plugins: [
-        vue(), // write this
         laravel({
-            input: ["resources/css/app.css", "resources/js/app.js"],
+            input: [
+                'resources/sass/app.scss',
+                'resources/js/app.jsx',
+            ],
             refresh: true,
         }),
+        react(),
     ],
 });
