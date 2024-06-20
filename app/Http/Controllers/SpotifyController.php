@@ -43,6 +43,9 @@ class SpotifyController extends Controller
     //
     public function handleCallback(Request $request)
     {
+        if (Auth::check()) {
+            return redirect('/admin');
+        }
         // ログイン情報を取得する
         $code = $request->input('code');
         $response = Http::asForm()->post('https://accounts.spotify.com/api/token', [
@@ -73,12 +76,21 @@ class SpotifyController extends Controller
         }
 
         Auth::login($user);
-        return redirect('/admin');
+
+        // if (Auth::check()) {
+        //     dd('ok');
+        // }
+
+        // dd(Auth::user());
+            return redirect('/admin');
     }
+
 
     public function admin(Request $request){
         // Auth::user();
-        return view('admins.index');
+        $roomCtr = new RoomController;
+        $roomInfo = $roomCtr->getRoomId(Auth::user()->spotify_id);
+        return view('admins.index', compact('roomInfo'));
     }
 
     // リフレッシュアクセストークン

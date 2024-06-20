@@ -16,7 +16,8 @@ class RoomController extends Controller
     }
     public function create(Request $request){
         $myId = Auth::user()->id;
-        $roomId = Str::random(8);
+        // $roomId = Str::random(8);
+        $roomId =Auth::user()->spotify_id;
         $spotifyId = User::where('id', $myId)->first()->spotify_id;
 
         $result = Room::where('owner_spotify_id', $spotifyId)->first();
@@ -28,6 +29,16 @@ class RoomController extends Controller
             'owner_spotify_id'=> $spotifyId,
             'room_id' => $roomId,
         ]);
+    }
+
+    public function getRoomId($spotifyId){
+        $result = Room::where('owner_spotify_id', $spotifyId)->first();
+        if($result != null){
+            return $result;
+        }else{
+            return null;
+        }
+
     }
 
 
