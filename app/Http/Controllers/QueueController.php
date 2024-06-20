@@ -53,7 +53,13 @@ class QueueController extends Controller
         return response()->json($value,200, array('Access-Control-Allow-Origin' => '*'));
     }
 
-    public function getQueueApi($roomId){
+    public function getQueueApi(Request $request){
+        $roomId = $request->input('room_id');
+        $sptCtr = new SpotifyController();
+        $roomCtr = new RoomController();
 
+        $ownerToken = $roomCtr->getRoomOwnerToken($roomId);
+        $value = $sptCtr->getQueueList($ownerToken, 20);
+        return response()->json($value,200, array('Access-Control-Allow-Origin' => '*'));
     }
 }

@@ -208,6 +208,7 @@ class SpotifyController extends Controller
         if($result['result']['queue'] == []){
             return [];
         }
+        if($num > count($queueList)) $num = count($queueList);
         for($i=0; $i < $num; $i++){
             $value['queue'][$i] = $queueList[$i];
         }

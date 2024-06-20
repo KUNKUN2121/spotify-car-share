@@ -41,6 +41,7 @@ Route::get('/api/csrf-token', function() {
 });
 // 再生履歴の取得
 Route::get('/api/history', [HistoryController::class, 'getHistory'])->name('getHistory');
+Route::get('/api/queue', [QueueController::class, 'getQueueApi'])->name('getQueueApi');
 
 // Route::get('/spotify', [SpotifyController::class, 'index']);
 
