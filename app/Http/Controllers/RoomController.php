@@ -41,6 +41,21 @@ class RoomController extends Controller
 
     }
 
+    public function skipToPrevious(Request $request){
+        $roomId = $request->input('room_id');
+        $ownerToken = $this->getRoomOwnerToken($roomId);
+        $spt = new SpotifyController();
+        $spt->skipToPrevious($ownerToken);
+    }
+
+    public function skipToNext(Request $request){
+        $roomId = $request->input('room_id');
+        $ownerToken = $this->getRoomOwnerToken($roomId);
+        $spt = new SpotifyController();
+        $spt->skipToNext($ownerToken);
+    }
+
+
 
     public function getRoomNow(Request $request){
         $roomId = $request->input('room_id');
@@ -118,5 +133,7 @@ class RoomController extends Controller
         $ownerToken = $owner->token;
         return $ownerToken;
     }
+
+
 
 }

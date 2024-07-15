@@ -43,6 +43,10 @@ Route::get('/api/csrf-token', function() {
 Route::get('/api/history', [HistoryController::class, 'getHistory'])->name('getHistory');
 Route::get('/api/queue', [QueueController::class, 'getQueueApi'])->name('getQueueApi');
 
+// プレイヤー操作
+Route::get('/api/next', [RoomController::class, 'skipToNext'])->name('skipToNext');
+Route::get('/api/previous', [RoomController::class, 'skipToPrevious'])->name('skipToNext');
+
 // Route::get('/spotify', [SpotifyController::class, 'index']);
 
 // ログイン機能

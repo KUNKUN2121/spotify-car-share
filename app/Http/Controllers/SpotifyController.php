@@ -217,6 +217,23 @@ class SpotifyController extends Controller
 
     }
 
+    public function skipToNext($accessToken){
+        $result = $this->postApi($accessToken, "/v1/me/player/next");
+        if($result == 201){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public function skipToPrevious($accessToken){
+        $result = $this->postApi($accessToken, "/v1/me/player/previous");
+        if($result == 201){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     // API取得用 240229
     public function getApi($token, $request){
 
@@ -227,7 +244,6 @@ class SpotifyController extends Controller
             'Accept-Language' =>  'ja',
         ])->get($url);
         $result = $response->json();
-
         if ($response->successful()) {
 
             return [
