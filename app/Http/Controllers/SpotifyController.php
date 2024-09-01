@@ -234,6 +234,20 @@ class SpotifyController extends Controller
         }
     }
 
+
+    /**
+     * getMusicInfo
+     */
+    public function getMusicInfo($accessToken, $spotifyMusicId){
+        $url = "/v1/tracks/" . $spotifyMusicId;
+        $result = $this->getApi($accessToken, $url);
+        if($result == 401){
+            return 401;
+        }
+        return $result;
+
+    }
+
     // API取得用 240229
     public function getApi($token, $request){
 
@@ -284,6 +298,8 @@ class SpotifyController extends Controller
         }
         return 500;
     }
+
+
 
 
 }
