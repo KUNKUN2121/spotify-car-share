@@ -62,7 +62,9 @@ Route::get('/admin/callback', [SpotifyController::class, 'handleCallback']);
 Route::group(['middleware' => 'auth'], function () {
     //この中に以前の記事で書いたルーティングのコードを書いていく
     Route::get('/admin', [SpotifyController::class, 'admin']);
-    Route::get('/admin/create', [RoomController::class, 'create']);
+    Route::get('/admin/room/create', [RoomController::class, 'create']);
+    Route::get('/admin/room/delete', [RoomController::class, 'delete']);
+    Route::get('/admin/account/delete', [SpotifyController::class, 'deleteAccount']);
   });
 
 

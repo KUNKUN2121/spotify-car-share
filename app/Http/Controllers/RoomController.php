@@ -32,6 +32,21 @@ class RoomController extends Controller
         return redirect('/admin');
     }
 
+    public function delete(Request $request){
+        $myId = Auth::user()->id;
+        $spotifyId = User::where('id', $myId)->first()->spotify_id;
+
+        $result = Room::where('owner_spotify_id', $spotifyId)->first();
+
+        if($result == null) {
+            return "500";
+        }
+
+        $result->delete();
+
+        return redirect('/admin');
+    }
+
     public function getRoomId($spotifyId){
         $result = Room::where('owner_spotify_id', $spotifyId)->first();
         if($result != null){

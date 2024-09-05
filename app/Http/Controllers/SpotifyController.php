@@ -95,6 +95,13 @@ class SpotifyController extends Controller
         return view('admins.index', compact('roomInfo'));
     }
 
+    public function deleteAccount(Request $request){
+        $me = Auth::user();
+        // $me->delete();
+        // return redirect()->route('top');
+
+    }
+
     // リフレッシュアクセストークン
     public function refreshAccessToken($userId)
     {
