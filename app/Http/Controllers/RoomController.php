@@ -17,18 +17,19 @@ class RoomController extends Controller
     public function create(Request $request){
         $myId = Auth::user()->id;
         // $roomId = Str::random(8);
-        $roomId =Auth::user()->spotify_id;
+        $roomId = Str::random(6);
         $spotifyId = User::where('id', $myId)->first()->spotify_id;
 
         $result = Room::where('owner_spotify_id', $spotifyId)->first();
 
         if($result != null){
-            return null;
+            return "500";
         }
-        Room::create([
+        $result = Room::create([
             'owner_spotify_id'=> $spotifyId,
             'room_id' => $roomId,
         ]);
+        return redirect('/admin');
     }
 
     public function getRoomId($spotifyId){

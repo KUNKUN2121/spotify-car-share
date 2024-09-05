@@ -75,6 +75,8 @@ class SpotifyController extends Controller
             ]);
         }
 
+        // dd($user);
+
         Auth::login($user);
 
         // if (Auth::check()) {

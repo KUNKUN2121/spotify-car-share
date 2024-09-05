@@ -17,10 +17,37 @@
     @if($roomInfo)
         <div>
             <p>roomIDは  {{$roomInfo->room_id}}</p>
-            <a href="https://spy.agameru.work/app?roomId="></a>
+           <p> 参加リンク </p>
+            <a id ="joinLink" href="">参加用リンク</a>
+            <button onclick="copyLink()">コピーする</button>
         </div>
+    @else
+        <p>ルームが作成されていません</p>
+        <a href="./admin/create">ルーム作成</
     @endif
-    <a href="admin/create">ルーム作成</a>
+
+    <script>
+            function copyLink() {
+                // 1. リンクのhref属性を取得
+                const link = document.getElementById('joinLink').href;
+
+                // 2. クリップボードにコピー
+                navigator.clipboard.writeText(link)
+                .then(() => {
+                    alert('リンクがコピーされました: ' + link);
+                })
+                .catch(err => {
+                    alert('コピーに失敗しました: ' + err);
+                });
+            }
+
+            function getLink() {
+                var currentUrl = window.location.origin;
+                return currentUrl + "/?roomId=" + "{{$roomInfo->room_id}}";
+            }
+
+            document.getElementById('joinLink').href = getLink();
+    </script>
 
 </body>
 </html>
