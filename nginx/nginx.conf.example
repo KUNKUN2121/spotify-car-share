@@ -28,7 +28,7 @@ http {
 
     server {
         listen 80;
-        server_name spy-api.agameru.work;
+        server_name example.net; # ここに本番環境のAPI用のドメインをいれる
         root /var/www/html/public;  # Laravel publicディレクトリへのパスを設定
 
         index index.php index.html index.htm;

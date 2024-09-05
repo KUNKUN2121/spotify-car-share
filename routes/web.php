@@ -35,6 +35,12 @@ Route::get('/api/room_queue_list', [RoomController::class, 'getRoomQueueList']);
 Route::get('/api/search', [SearchController::class, 'getSearchList']);
 // 曲の追加
 Route::post('/api/add', [QueueController::class, 'addQueueApi']);
+// Route::post('/api/add', [QueueController::class, 'addUserQueueList']);
+// // 現在追加されいる仮想追加表示テスト
+// Route::get('/api/list/test', [QueueController::class, 'getUserQueueList']);
+// // Route::get('/api/list/test2', [QueueController::class, 'removeUserQueueList']);
+// Route::get('/api/list/test3', [QueueController::class, 'userQueueToAddQueueApi']);
+
 //csrf
 Route::get('/api/csrf-token', function() {
     return response()->json(['token' => csrf_token()]);

@@ -9,6 +9,18 @@
 </head>
 <body>
     {{\Illuminate\Support\Facades\Auth::user()->id}}でログインしています。
+    {{-- {{
+        if($roomInfo) ? $roomInfo->room_id : "";
+
+    }} --}}
+
+    @if($roomInfo)
+        <div>
+            <p>roomIDは  {{$roomInfo->room_id}}</p>
+            <a href="https://spy.agameru.work/app?roomId="></a>
+        </div>
+    @endif
     <a href="admin/create">ルーム作成</a>
+
 </body>
 </html>
