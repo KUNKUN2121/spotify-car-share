@@ -89,8 +89,10 @@ class RoomController extends Controller
         }
 
         // 歌詞を追加する
-        $this->checkAndFetchLyrics($roomId, $result);
-             return response()->json($result,200, array('Access-Control-Allow-Origin' => '*'));
+        $this->checkAndFetchLyrics2($roomId, $result);
+        // $abc = new LyricsNewController;
+        // dd($abc->index());
+        return response()->json($result,200, array('Access-Control-Allow-Origin' => '*'));
     }
 
     private function getRoomNowResult($ownerToken, $roomId) {
@@ -129,6 +131,32 @@ class RoomController extends Controller
             }else{
                 $LyricsController = new LyricsController;
                 $result['lyrics'] = $LyricsController->get($result['links']['song-id']);
+            }
+            // 結果をキャッシュする
+            cache([$roomId.'_result' => $result], 600);
+        }
+    }
+
+    // 2
+    private function checkAndFetchLyrics2($roomId, &$result) {
+        if(isset($result['links']['song-id'])){
+
+            $cacheResult = cache($roomId.'_result');
+
+            if(isset($cacheResult['links']['song-id'])){
+                if($result['links']['song-id'] != $cacheResult['links']['song-id'] || !isset($cacheResult['lyrics'])){
+                    // songIdが変わった場合の処理
+                    $LyricsController = new LyricsNewController;
+                    $result['lyrics'] = $LyricsController->get($result);
+                } else {
+                    // 歌詞がキャッシュされている場合はそれを使用する
+                    if(isset($cacheResult['lyrics'])) {
+                        $result['lyrics'] = $cacheResult['lyrics'];
+                    }
+                }
+            }else{
+                $LyricsController = new LyricsNewController;
+                $result['lyrics'] = $LyricsController->get($result);
             }
             // 結果をキャッシュする
             cache([$roomId.'_result' => $result], 600);
