@@ -52,6 +52,11 @@ class LyricsNewController extends Controller
             }
         });
 
+        if(empty($durationany)) {
+            $result['response'] = 404;
+            return $result;
+        }
+
 
 
 
