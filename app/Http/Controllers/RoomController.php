@@ -89,7 +89,8 @@ class RoomController extends Controller
         }
 
         // 歌詞を追加する
-        $this->checkAndFetchLyrics2($roomId, $result);
+        // $this->checkAndFetchLyrics2($roomId, $result);
+        $this->checkAndFetchLyrics($roomId, $result);
         // $abc = new LyricsNewController;
         // dd($abc->index());
         return response()->json($result,200, array('Access-Control-Allow-Origin' => '*'));
