@@ -4,22 +4,17 @@
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/akashrchandran/spotify-lyrics-api"
-        }
-    ],
     "require": {
         "php": "^8.1",
-        "akashrchandran/spotify-lyrics-api": "dev-main",
+        "akashrchandran/spotify-lyrics-api": "^2.1",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.12",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.5",
-        "socialiteproviders/spotify": "^4.1"
+        "socialiteproviders/spotify": "^4.1",
+        "spomky-labs/otphp": "^11.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
