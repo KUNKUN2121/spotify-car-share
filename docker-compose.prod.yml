@@ -52,7 +52,8 @@ services:
         restart: always
 
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin
+        # image: phpmyadmin/phpmyadmin
+        image: arm64v8/phpmyadmin
         depends_on:
             - mysql
         ports:
